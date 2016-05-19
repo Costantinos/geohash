@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rayzit.ViewModels
+namespace ViewModels
 {
 
     public class Geohash
