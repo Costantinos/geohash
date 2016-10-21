@@ -69,3 +69,57 @@ var numbits=5*5;
       }
      return base32(parseInt(buffer,2));
    }
+
+function decode(geohash) {
+    var buffer = "";
+    geohash.split('').forEach(function(c){
+        
+        var i = parseInt(lookup[c]) + 32;
+        buffer+=i.toString(2).substring(1);
+    });
+
+   var lonset = [];
+   var latset = [];
+
+    for (var i = 0; i < 64; i++) {
+        lonset[i]=false;
+        latset[i]=false;
+    }
+
+    var j = 0;
+    for (var i = 0; i < numbits * 2; i += 2) {
+        var isSet = false;
+        if (i < buffer.length){
+            isSet = (buffer.charAt(i) == '1');
+        }
+        lonset[j++]=isSet;
+    }
+
+    j = 0;
+    for (var i = 1; i < numbits * 2; i += 2) {
+        var isSet = false;
+        if (i < buffer.length){
+            isSet = (buffer.charAt(i) == '1');
+        }
+        latset[j++]=isSet;
+    }
+
+    var lon = decodeIn(lonset, -180, 180);
+    var lat = decodeIn(latset, -90, 90);
+
+    return [lat,lon];
+}
+
+function decodeIn(lonset,floor,ceiling) {
+    var mid = 0;
+    for (var i = 0; i < lonset.length; i++) {
+        mid = (floor + ceiling) / 2;
+        if (lonset[i])
+            floor = mid;
+        else
+            ceiling = mid;
+    }
+    return mid;
+}   
+   
+   
